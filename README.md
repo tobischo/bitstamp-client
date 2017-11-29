@@ -1,6 +1,6 @@
 # Bitstamp
 
-[![Travis Build state](https://api.travis-ci.org/tobischo/bitstamp.svg)](https://travis-ci.org/tobischo/bitstamp) [![Code Climate](https://codeclimate.com/github/tobischo/bitstamp/badges/gpa.svg)](https://codeclimate.com/github/tobischo/bitstamp) [![RubyDoc](https://img.shields.io/badge/ruby-doc-green.svg)](http://rubydoc.info/github/tobischo/bitstamp)
+[![Travis Build state](https://api.travis-ci.org/tobischo/bitstamp-client.svg)](https://travis-ci.org/tobischo/bitstamp-client) [![Code Climate](https://codeclimate.com/github/tobischo/bitstamp-client/badges/gpa.svg)](https://codeclimate.com/github/tobischo/bitstamp-client) [![RubyDoc](https://img.shields.io/badge/ruby-doc-green.svg)](http://rubydoc.info/github/tobischo/bitstamp-client)
 
 Client lib for the Bitstamp Exchange API
 
