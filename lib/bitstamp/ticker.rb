@@ -1,6 +1,6 @@
 module Bitstamp
   module Ticker
-    def ticker(currency_pair = nil)
+    def ticker(currency_pair: nil)
       if currency_pair == nil
         return call(request_uri('ticker'), 'GET', nil)
       else
@@ -8,7 +8,7 @@ module Bitstamp
       end
     end
 
-    def hourly_ticker(currency_pair = nil)
+    def hourly_ticker(currency_pair: nil)
       if currency_pair == nil
         return call(request_uri('ticker_hour'), 'GET', nil)
       else

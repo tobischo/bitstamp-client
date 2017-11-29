@@ -1,6 +1,6 @@
 module Bitstamp
   module OrderBook
-    def order_book(currency_pair = nil)
+    def order_book(currency_pair: nil)
       if currency_pair == nil
         return call(request_uri('order_book'), 'GET', nil)
       else

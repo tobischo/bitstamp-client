@@ -1,21 +1,30 @@
+require 'forwardable'
 require 'json'
 require 'openssl'
 require 'typhoeus'
 
+require_relative './account_balance'
+require_relative './deposit'
 require_relative './conversion_rates'
 require_relative './exception'
 require_relative './order_book'
+require_relative './orders'
+require_relative './subaccount_transfer'
 require_relative './ticker'
 require_relative './trading_pairs'
 require_relative './transactions'
+require_relative './user_transactions'
+require_relative './withdrawal'
 
 module Bitstamp
   class Client
+    extend Forwardable
+
     BASE_URI = 'https://www.bitstamp.net/api'
 
     def initialize(customer_id:, api_key:, secret:)
       @customer_id    = customer_id
-      @apikey         = api_key
+      @api_key        = api_key
       @secret         = secret
 
       @connecttimeout = 1
@@ -42,8 +51,8 @@ module Bitstamp
 
       def call(request_uri, method, body)
         request_hash = {
-          method:         method,
-          body:           body,
+          method:  method,
+          body:    body,
           headers: {
             'User-Agent' => "Bitstamp::Client Ruby v#{::Bitstamp::VERSION}"
           },
@@ -70,94 +79,36 @@ module Bitstamp
       end
     end
 
-    def account_balance
-      # key
-      # signature
-      # nonce
+    def_delegators "Bitstamp::Client", :request_uri, :handle_response
+
+    include ::Bitstamp::AccountBalance
+    include ::Bitstamp::Deposit
+    include ::Bitstamp::Orders
+    include ::Bitstamp::SubaccountTransfer
+    include ::Bitstamp::UserTransactions
+    include ::Bitstamp::Withdrawal
+
+    def call(request_uri, method, body)
+      body = params_with_signature(body)
+
+      ::Bitstamp::Client.call(request_uri, method, body)
     end
 
-    def user_transactions
+    def params_with_signature(params = {})
+      if params[:nonce] == nil
+        params[:nonce] = (Time.now.to_f * 1000000).to_i.to_s # Microseconds
+      end
+
+      params[:key]       = @api_key
+      params[:signature] = build_signature(params[:nonce])
+
+      return params
     end
 
-    def open_orders
-    end
+    def build_signature(nonce)
+      message = nonce + @customer_id + @api_key
 
-    def order_status
-    end
-
-    def cancel_order
-    end
-
-    def cancel_all_orders
-    end
-
-    def buy_limit_order
-    end
-
-    def buy_market_order
-    end
-
-    def sell_limit_order
-    end
-
-    def sell_market_order
-    end
-
-    def withdrawal_requests
-    end
-
-    def bitcoin_withdrawal
-    end
-
-    def bitcoin_deposit_address
-    end
-
-    def litecoin_withdrawal
-    end
-
-    def litecoin_deposit_address
-    end
-
-    def etc_withdrawal
-    end
-
-    def etc_deposit_address
-    end
-
-    def unconfirmed_bitcoin_deposits
-    end
-
-    def ripple_withdrawal
-    end
-
-    def ripple_deposit_address
-    end
-
-    def transfer_to_main
-    end
-
-    def transfer_from_main
-    end
-
-    def xrp_withdrawal
-    end
-
-    def xrp_deposit_address
-    end
-
-    def open_bank_withdrawal
-    end
-
-    def bank_withdrawal_status
-    end
-
-    def cancel_bank_withdrawal
-    end
-
-    def new_liquidation_address
-    end
-
-    def liquidation_address_info
+      return OpenSSL::HMAC.hexdigest("SHA256", @secret, message).upcase
     end
 
     private

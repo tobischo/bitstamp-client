@@ -1,6 +1,6 @@
 module Bitstamp
   module Transactions
-    def transactions(currency_pair = nil)
+    def transactions(currency_pair: nil)
       if currency_pair == nil
         return call(request_uri('transactions'), 'GET', nil)
       else
