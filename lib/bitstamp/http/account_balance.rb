@@ -1,4 +1,4 @@
-module Bitstamp
+module Bitstamp::HTTP
   module AccountBalance
     def account_balance(nonce: nil, currency_pair: nil)
       params = { nonce: nonce }

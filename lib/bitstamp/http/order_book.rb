@@ -1,4 +1,4 @@
-module Bitstamp
+module Bitstamp::HTTP
   module OrderBook
     def order_book(currency_pair: nil)
       if currency_pair == nil

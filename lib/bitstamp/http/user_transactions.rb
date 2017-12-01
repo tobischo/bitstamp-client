@@ -1,4 +1,4 @@
-module Bitstamp
+module Bitstamp::HTTP
   module UserTransactions
     def user_transactions(nonce: nil, offset: 0, limit: 100, sort: 'desc', currency_pair: nil)
       params = { nonce: nonce }

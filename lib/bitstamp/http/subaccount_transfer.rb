@@ -1,4 +1,4 @@
-module Bitstamp
+module Bitstamp::HTTP
   module SubaccountTransfer
     def transfer_to_main(nonce: nil, amount:, currency:, sub_account:)
       params = {

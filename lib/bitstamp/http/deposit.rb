@@ -1,4 +1,4 @@
-module Bitstamp
+module Bitstamp::HTTP
   module Deposit
     def bitcoin_deposit_address(nonce: nil)
       params = { nonce: nonce }

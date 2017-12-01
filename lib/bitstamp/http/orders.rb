@@ -1,4 +1,4 @@
-module Bitstamp
+module Bitstamp::HTTP
   module Orders
     def open_orders(nonce: nil, currency_pair: nil)
       params = { nonce: nonce }

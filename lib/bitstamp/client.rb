@@ -3,18 +3,8 @@ require 'json'
 require 'openssl'
 require 'typhoeus'
 
-require_relative './account_balance'
-require_relative './deposit'
-require_relative './conversion_rates'
-require_relative './exception'
-require_relative './order_book'
-require_relative './orders'
-require_relative './subaccount_transfer'
-require_relative './ticker'
-require_relative './trading_pairs'
-require_relative './transactions'
-require_relative './user_transactions'
-require_relative './withdrawal'
+require_relative './handler'
+require_relative './http'
 
 module Bitstamp
   class Client
@@ -22,21 +12,23 @@ module Bitstamp
 
     BASE_URI = 'https://www.bitstamp.net/api'
 
+    CONNECTTIMEOUT = 1
+    TIMEOUT        = 10
+
+
     def initialize(customer_id:, api_key:, secret:)
       @customer_id    = customer_id
       @api_key        = api_key
       @secret         = secret
-
-      @connecttimeout = 1
-      @timeout        = 10
     end
 
     class << self
-      include ::Bitstamp::ConversionRates
-      include ::Bitstamp::OrderBook
-      include ::Bitstamp::Ticker
-      include ::Bitstamp::TradingPairs
-      include ::Bitstamp::Transactions
+      include ::Bitstamp::Handler
+      include ::Bitstamp::HTTP::ConversionRates
+      include ::Bitstamp::HTTP::OrderBook
+      include ::Bitstamp::HTTP::Ticker
+      include ::Bitstamp::HTTP::TradingPairs
+      include ::Bitstamp::HTTP::Transactions
 
       def request_uri(*parts)
         uri = BASE_URI
@@ -56,37 +48,25 @@ module Bitstamp
           headers: {
             'User-Agent' => "Bitstamp::Client Ruby v#{::Bitstamp::VERSION}"
           },
-          connecttimeout: @connecttimeout,
-          timeout:        @timeout,
+          connecttimeout: CONNECTTIMEOUT,
+          timeout:        TIMEOUT
         }
 
         request = ::Typhoeus::Request.new(request_uri, request_hash)
         response = request.run
 
-        return handle_response(response)
-      end
-
-      def handle_response(response)
-        body = JSON.parse(response.body)
-
-        if body.kind_of?(Hash) && body.has_key?('error')
-          raise ::Bitstamp::Exception::ServiceError(body)
-        end
-
-        return body
-      rescue JSON::ParserError
-        raise ::Bitstamp::Exception::InvalidContent.new(response.body)
+        return handle_body(response.body)
       end
     end
 
-    def_delegators "Bitstamp::Client", :request_uri, :handle_response
+    def_delegators "Bitstamp::Client", :request_uri
 
-    include ::Bitstamp::AccountBalance
-    include ::Bitstamp::Deposit
-    include ::Bitstamp::Orders
-    include ::Bitstamp::SubaccountTransfer
-    include ::Bitstamp::UserTransactions
-    include ::Bitstamp::Withdrawal
+    include ::Bitstamp::HTTP::AccountBalance
+    include ::Bitstamp::HTTP::Deposit
+    include ::Bitstamp::HTTP::Orders
+    include ::Bitstamp::HTTP::SubaccountTransfer
+    include ::Bitstamp::HTTP::UserTransactions
+    include ::Bitstamp::HTTP::Withdrawal
 
     def call(request_uri, method, body)
       body = params_with_signature(body)
@@ -109,34 +89,6 @@ module Bitstamp
       message = nonce + @customer_id + @api_key
 
       return OpenSSL::HMAC.hexdigest("SHA256", @secret, message).upcase
-    end
-
-    private
-
-    def run_request(path:, nonce:, request_params: {})
-      body = request_params.merge(
-        {
-          key:       key,
-          signature: signature(nonce),
-          nonce:     nonce
-        }
-      )
-
-      request_uri = BASE_URI + path
-
-      request_hash = {
-        method: 'POST',
-        body:   body
-      }
-
-      request  = ::Typhoeus::Request.new(request_uri, request_hash)
-      response = request.run
-    end
-
-    def signature(nonce)
-      message = nonce + @customer_id + @api_key
-
-      return OpenSSL::HMAC.hexdigest("SHA256", @secret, message)
     end
   end
 end

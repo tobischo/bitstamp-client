@@ -1,4 +1,4 @@
-module Bitstamp
+module Bitstamp::HTTP
   module Ticker
     def ticker(currency_pair: nil)
       if currency_pair == nil

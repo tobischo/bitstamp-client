@@ -17,12 +17,12 @@ module Bitstamp
     class InvalidContent < StandardError
       attr_reader :body
 
-      def initialize(body)
-        @body = body
+      def initialize(raw_body)
+        @raw_body = raw_body
       end
 
       def message
-        "Failed to parse body as 'json': '#{@body}'"
+        "Failed to parse body as 'json': '#{@raw_body}'"
       end
 
       def inspect

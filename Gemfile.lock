@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bitstamp-client (0.2.0)
+    bitstamp-client (0.3.0)
       eventmachine (~> 1.2, >= 1.2.0)
       faye (~> 1.2, >= 1.2.0)
       json (~> 2.1, >= 2.1.0)

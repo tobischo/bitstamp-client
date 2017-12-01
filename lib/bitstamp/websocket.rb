@@ -2,8 +2,15 @@ require 'faye/websocket'
 require 'eventmachine'
 require 'json'
 
+require_relative './handler'
+require_relative './socket'
+
 module Bitstamp
   class Websocket
+    include ::Bitstamp::Handler
+    include ::Bitstamp::Socket::Orders
+    include ::Bitstamp::Socket::Trades
+
     BASE_URI  = 'wss://ws.pusherapp.com/app/de504dc5763aeef9ff52'
     CLIENT_ID = 'bitstamp-client'
     PROTOCOL  = 7
@@ -11,13 +18,6 @@ module Bitstamp
 
     def initialize(logger)
       @logger = logger
-    end
-
-    def live_trades(currency_pair:, &block)
-      channel = "live_trades_#{currency_pair}"
-      event   = 'trade'
-
-      listen(channel, event, block)
     end
 
     private
@@ -32,11 +32,11 @@ module Bitstamp
         end
 
         websocket.on(:message) do |message|
-          parsed_message = JSON.parse(message.data)
+          parsed_message = handle_body(message.data)
 
           case parsed_message.fetch('event')
           when event
-            data = JSON.parse(parsed_message.fetch('data'))
+            data = handle_body(parsed_message.fetch('data'))
             block.call(data)
           when 'pusher:connection_established'
             @logger.debug('Connection established')
