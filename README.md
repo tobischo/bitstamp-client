@@ -11,6 +11,9 @@ Client lib for the Bitstamp Exchange API
         gem 'bitstamp-client'
 
 2. Require the Gem at any point before using it
+
+        require 'bitstamp'
+
 3. Use it!
 
 
