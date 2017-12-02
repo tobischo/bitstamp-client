@@ -1,14 +1,10 @@
 module Bitstamp
   module Exception
     class ServiceError < StandardError
-      attr_reader :body
+      attr_reader :message
 
-      def initialize(body)
-        @body = body
-      end
-
-      def message
-        @body.fetch('error')
+      def initialize(message)
+        @message = message
       end
 
       alias_method :to_s, :message

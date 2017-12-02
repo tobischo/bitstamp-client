@@ -1,17 +1,13 @@
 require 'spec_helper'
 
 describe Bitstamp::Exception::ServiceError do
-  let(:body) {
-    {
-      'error' => 'something went wrong'
-    }
-  }
+  let(:message) { 'something went wrong' }
 
   let(:exception) {
-    described_class.new(body)
+    described_class.new(message)
   }
 
-  it 'returns the error message from the body' do
+  it 'returns the message' do
     expect(exception.message).to eq('something went wrong')
 
     expect(exception.to_s).to eq('something went wrong')

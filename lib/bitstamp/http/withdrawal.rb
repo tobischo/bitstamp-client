@@ -10,7 +10,7 @@ module Bitstamp::HTTP
       params = {
         nonce:   nonce,
         amount:  amount,
-        address: address,
+        address: address
       }
 
       call(request_uri('bitcoin_withdrawal'), 'POST', params)

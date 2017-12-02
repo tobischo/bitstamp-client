@@ -28,18 +28,21 @@ module Bitstamp::HTTP
       call(request_uri('cancel_all_orders'), 'POST', params)
     end
 
-    def buy_limit_order(nonce: nil, amount:, price:, limit_price:, currency_pair:)
+    def buy_limit_order(nonce: nil, amount:, price:, limit_price: nil, currency_pair:)
       params = {
-        nonce:       nonce,
-        amount:      amount,
-        price:       price,
-        limit_price: limit_price
+        nonce:  nonce,
+        amount: amount,
+        price:  price
       }
+
+      if limit_price != nil
+        params[:limit_price] = limit_price
+      end
 
       call(request_uri('v2', 'buy', currency_pair), 'POST', params)
     end
 
-    def buy_market_order(nonce: nil, amount:)
+    def buy_market_order(nonce: nil, amount:, currency_pair:)
       params = {
         nonce:       nonce,
         amount:      amount,
@@ -48,18 +51,21 @@ module Bitstamp::HTTP
       call(request_uri('v2', 'buy', 'market', currency_pair), 'POST', params)
     end
 
-    def sell_limit_order(nonce: nil, amount:, price:, limit_price:, currency_pair:)
+    def sell_limit_order(nonce: nil, amount:, price:, limit_price: nil, currency_pair:)
       params = {
         nonce:       nonce,
         amount:      amount,
-        price:       price,
-        limit_price: limit_price
+        price:       price
       }
+
+      if limit_price != nil
+        params[:limit_price] = limit_price
+      end
 
       call(request_uri('v2', 'sell', currency_pair), 'POST', params)
     end
 
-    def sell_market_order(nonce: nil, amount:)
+    def sell_market_order(nonce: nil, amount:, currency_pair:)
       params = {
         nonce:       nonce,
         amount:      amount,
