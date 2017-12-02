@@ -21,7 +21,7 @@ module Bitstamp::Socket
       listen(channel, event, block)
     end
 
-    def live_orders_changed(currency_pair:, &block)
+    def live_orders_deleted(currency_pair:, &block)
       channel = "live_orders_#{currency_pair}"
       event   = 'order_deleted'
 

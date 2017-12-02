@@ -14,50 +14,52 @@ module Bitstamp
     BASE_URI  = 'wss://ws.pusherapp.com/app/de504dc5763aeef9ff52'
     CLIENT_ID = 'bitstamp-client'
     PROTOCOL  = 7
-    PARAMS    = "?#{CLIENT_ID}&version=#{Bitstamp::VERSION}&protocol=#{PROTOCOL}"
+    PARAMS    = "?client=#{CLIENT_ID}&version=#{Bitstamp::VERSION}&protocol=#{PROTOCOL}"
 
     def initialize(logger)
       @logger = logger
     end
 
-    private
-
     def listen(channel, event, block)
       EM.run do
-        websocket = Faye::WebSocket::Client.new(BASE_URI + PARAMS)
+        setup_socket(channel, event, block)
+      end
+    end
 
-        websocket.on(:open) do |message|
-          subscribe(websocket, channel)
-          @logger.debug("Opened connection and subscribed to #{channel}")
+    def setup_socket(channel, event, block)
+      websocket = Faye::WebSocket::Client.new(BASE_URI + PARAMS)
+
+      websocket.on(:open) do |message|
+        subscribe(websocket, channel)
+        @logger.debug("Opened connection and subscribed to '#{channel}'")
+      end
+
+      websocket.on(:message) do |message|
+        parsed_message = handle_body(message.data)
+
+        case parsed_message.fetch('event')
+        when event
+          data = handle_body(parsed_message.fetch('data'))
+          block.call(data)
+        when 'pusher:connection_established'
+          @logger.debug('Connection established')
+        when 'pusher_internal:subscription_succeeded'
+          @logger.debug("Subscription to channel '#{channel}' succeeded")
+        else
+          @logger.debug("Received unhandled message: #{message.data.to_s}")
         end
+      end
 
-        websocket.on(:message) do |message|
-          parsed_message = handle_body(message.data)
+      websocket.on(:close) do |message|
+        @logger.debug("Closed websocket connection: #{message.data.to_s}")
 
-          case parsed_message.fetch('event')
-          when event
-            data = handle_body(parsed_message.fetch('data'))
-            block.call(data)
-          when 'pusher:connection_established'
-            @logger.debug('Connection established')
-          when 'pusher_internal:subscription_succeeded'
-            @logger.debug("Subscription to channel '#{channel}' succeeded")
-          else
-            @logger.debug("Received unhandled message: #{message.data.to_s}")
-          end
-        end
-
-        websocket.on(:close) do |message|
-          @logger.debug("Closed websocket connection: #{message.data.to_s}")
-
-          return
-        end
+        return
       end
     end
 
     def subscribe(websocket, channel)
       subscribe_message = {
-        event: "pusher:subscribe",
+        event: 'pusher:subscribe',
         data:  { channel: channel }
       }
 
