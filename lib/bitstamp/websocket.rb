@@ -51,9 +51,7 @@ module Bitstamp
       end
 
       websocket.on(:close) do |message|
-        @logger.debug("Closed websocket connection: #{message.data.to_s}")
-
-        return
+        @logger.debug("Closed websocket connection")
       end
     end
 
