@@ -63,7 +63,7 @@ describe Bitstamp::Websocket do
 
       expect(logger)
         .to receive(:debug)
-        .with("Closed websocket connection: #{data}")
+        .with("Closed websocket connection")
 
       expect(websocket)
         .to receive(:on)
