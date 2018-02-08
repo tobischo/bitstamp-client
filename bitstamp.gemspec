@@ -26,6 +26,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'eventmachine', '~> 1.2', '>= 1.2.0'
   spec.add_dependency 'faye',         '~> 1.2', '>= 1.2.0'
-  spec.add_dependency 'json',         '~> 2.1', '>= 2.1.0'
+  spec.add_dependency 'json'
   spec.add_dependency 'typhoeus',     '~> 1.3', '>= 1.3.0'
 end
