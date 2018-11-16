@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake',      '~> 12.3', '>= 12.3.0'
   spec.add_development_dependency 'rspec',     '~> 3.7', '>= 3.7.0'
   spec.add_development_dependency 'builder',   '~> 3.2', '>= 3.2.3'
-  spec.add_development_dependency 'rack-test', '~> 0.8.2'
+  spec.add_development_dependency 'rack-test', '~> 1.1.0'
 
   spec.add_dependency 'eventmachine', '~> 1.2', '>= 1.2.0'
   spec.add_dependency 'faye',         '~> 1.2', '>= 1.2.0'
