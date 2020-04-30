@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["tobias.schoknecht@gmail.com"]
   spec.description   = %q{Bitstamp Exchange API Client}
   spec.summary       = %q{Very generic client for REST API with basic error handling}
-  spec.homepage      = 'https://github.com/tobischo/bitstamp'
+  spec.homepage      = 'https://github.com/tobischo/bitstamp-client'
   spec.license       = 'MIT'
 
   spec.files         = Dir['lib/**/*.rb']
