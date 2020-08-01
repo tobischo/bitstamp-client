@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bitstamp-client (0.3.4)
+    bitstamp-client (0.4.0)
       eventmachine (~> 1.2, >= 1.2.0)
       faye (~> 1.2, >= 1.2.0)
       json
@@ -37,9 +37,9 @@ GEM
     faye-websocket (0.11.0)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
-    ffi (1.12.2)
+    ffi (1.13.1)
     http_parser.rb (0.6.0)
-    json (2.3.0)
+    json (2.3.1)
     multi_json (1.15.0)
     public_suffix (4.0.5)
     rack (2.2.3)
@@ -59,7 +59,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.0)
-    typhoeus (1.3.1)
+    typhoeus (1.4.0)
       ethon (>= 0.9.0)
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
