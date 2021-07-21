@@ -46,7 +46,7 @@ module Bitstamp
           method:  method,
           body:    body,
           headers: {
-            'User-Agent' => "Bitstamp::Client Ruby v#{::Bitstamp::VERSION}"
+            'User-Agent' => "Bitstamp::Client Ruby"
           },
           connecttimeout: CONNECTTIMEOUT,
           timeout:        TIMEOUT
