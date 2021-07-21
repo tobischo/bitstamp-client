@@ -67,6 +67,7 @@ module Bitstamp
     include ::Bitstamp::HTTP::SubaccountTransfer
     include ::Bitstamp::HTTP::UserTransactions
     include ::Bitstamp::HTTP::Withdrawal
+    include ::Bitstamp::HTTP::TradingPairs
 
     def call(request_uri, method, body)
       body = params_with_signature(body)
@@ -75,6 +76,7 @@ module Bitstamp
     end
 
     def params_with_signature(params = {})
+      params = {} if params.nil?
       if params[:nonce] == nil
         params[:nonce] = (Time.now.to_f * 1000000).to_i.to_s # Microseconds
       end
