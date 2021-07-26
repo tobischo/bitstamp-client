@@ -53,7 +53,15 @@ module Bitstamp
         }
 
         request = ::Typhoeus::Request.new(request_uri, request_hash)
-        response = request.run
+        begin
+          retries ||= 0
+          response = request.run
+
+          raise 'Something went wrong with request!'
+        rescue StandardError
+          sleep 0.5
+          retry if (retries += 1) <= 3 && response.nil?
+        end
 
         return handle_body(response.body)
       end
